@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang ="en">
+<head>
+    <title>Modal - Choice</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="minimum-scale=1.0, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <link rel="stylesheet" type="text/css" href="styles/style.css" />
+    <link rel="stylesheet" type="text/css" href="styles/custom-dropdown.css" />
+
+    <script src="scripts/vue.2.4.2.js"></script>
+
+    <script id="custom-dropdown-tpl" type="template/x-template">
+      <div class="autocomplete">
+        <p class="control icon-right">
+          <input type="text" class="input-dropdown"
+          :placeholder="placeholder"
+          @input="onInput($event.target.value)"
+          @focus="isOpened = true"
+          @blur="isOpened = false"
+          @keyup.enter="select"
+          @keyup.tab="select"
+          @keydown.down="onDown"
+          @keydown.up="onUp"
+          @keyup.esc="isOpened = false"
+          v-model="search"/>
+        </p>
+        <transition	name="fade" mode="in-out">
+            <ul class="options-list" v-show="isOpened">
+              <li v-for="(option, i) in filteredItems"
+              		@mouseenter="selected = i"
+                  @mousedown="select"
+              		:class="{'selected': i === selected}">
+                {{ (dropdownKey && option[dropdownKey]) || option }}
+                <slot name="item" :title="option[dropdownKey]" :thumbnail="option.thumbnail">
+                </slot>
+              </li>
+            </ul>
+        </transition>
+      </div>
+    </script>
+</head>
+<body>
+    <div id="app">
+        <div class="container">
+            <div @click="click('cancel')" class="close-btn">
+            </div>
+            <h2> Select an Employee</h2>
+            <div class="checkbox-content">
+                <input type="checkbox" name="checkbox" id="checkbox_id" value="value">
+                <label for="checkbox_id">Send welcome email to employee</label>
+            </div>
+            <div class="main-content">
+
+            <div class="dropdown">
+                <div class="title">
+                    Select a Team in the Organization
+                </div>
+                <custom-dropdown :options="options" :placeholder="'Select Team...'" :dropdown-key="'team'" @select-item="teamSelected">
+                  <template slot="item" scope="option">
+                  </template>
+                </custom-dropdown>
+            </div>
+            <div class="dropdown last">
+                <div class="title">
+                    Select an Employee
+                </div>
+                <custom-dropdown :options="employees" :placeholder="'Select Employee...'" @select-item="employeeSelected">
+                  <template slot="item" scope="option">
+                  </template>
+                </custom-dropdown>
+            </div>
+            <div class="btn-wrap">
+                <div @click="click('cancel')" class="btn cancel">Cancel</div>
+                <div @click="click('ok')" class="btn success">Ok</div>
+            </div>
+            </div>
+        </div>
+    </div>
+    <script src="scripts/custom-dropdown.js"> </script>
+    <script src="scripts/app.js"> </script>
+</body>
+</html>
